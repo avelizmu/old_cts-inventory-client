@@ -153,6 +153,9 @@ class Inventory extends React.Component<any, any> {
                             groupPending.push(rowData[field].toString() < token.substring(1))
                         }
                         break;
+                    default:
+                        groupPending.push(token === rowData[field].toString());
+                        break;
                 }
             }
             for (let i = groupPending.length - 1; i >= 0; i--) {
