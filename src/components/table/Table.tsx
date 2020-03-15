@@ -34,12 +34,12 @@ class Table extends React.Component<TableProps, TableState> {
         return <div className={styles.container}>
             <div className={styles.headerRow}>
                 {
-                    this.props.headers.map(header => <div className={styles.headerCell}>{header.display}</div>)
+                    this.props.headers.map(header => <div key={header.key} className={styles.headerCell}>{header.display}</div>)
                 }
             </div>
             <div className={styles.headerRow}>
                 {
-                    this.props.headers.map((header, index) => <div className={styles.filter}>
+                    this.props.headers.map((header, index) => <div key={header.key} className={styles.filter}>
                         <FilterList/>
                         <input className={styles.filterInput} onChange={(e) => {
                             const value = e.target.value;
@@ -69,9 +69,9 @@ class Table extends React.Component<TableProps, TableState> {
                         }
                     }
                     return true;
-                }).map(data => <div className={styles.dataRow}>
+                }).map(data => <div key={data.id} className={styles.dataRow}>
                     {
-                        this.props.headers.map(header => <div className={styles.dataCell}>
+                        this.props.headers.map(header => <div key={header.key} className={styles.dataCell}>
                             {
                                 data[header.key]
                             }
