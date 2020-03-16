@@ -1,11 +1,11 @@
 import React from 'react';
 import {mount} from 'enzyme';
 
-import Table, {TableProps} from "./Table";
+import Table from "./Table";
 
 describe('Table', () => {
-    const headersData = [{key: '1', display: 'Header 1'}, {key: '2', display: 'Header 2'}]
     it('Renders the headers', () => {
+        const headersData = [{key: '1', display: 'Header 1'}, {key: '2', display: 'Header 2'}]
         const component = mount(<Table data={[]} headers={headersData}/>);
 
         component.find('.headerCell').forEach((element, index) => {
@@ -36,20 +36,3 @@ describe('Table', () => {
         }
     });
 });
-
-
-
-/*it('Filters the data correctly', () => {
-    const headersData = [{key: 'first', display: 'Header 1'}, {key: 'second', display: 'Header 2'}];
-    const data = [{id: 0, first: '12345', second: "67890"}, {id: 1, first: '34567', second: '89012'}, {id: 2, first: '56789', second: '01234'}];
-    act(() => {
-        render(<Table data={data} headers={headersData}/>, container)
-    });
-
-    const dataRow = container.getElementsByClassName(styles.dataRow).item(0) as Element;
-
-
-    // @ts-ignore
-    Simulate.change(container.getElementsByClassName(styles.filterInput).item(0) as Element, {target: {value: '123'}});
-    console.log(`Test: ${(container.getElementsByClassName(styles.filterInput).item(0) as HTMLInputElement).value}`)
-});*/
