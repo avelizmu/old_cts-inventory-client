@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from './Login.module.css';
+import styles from './Login.module.scss';
 import LoadingModal from "../modals/loadingModal/LoadingModal";
 import axios from 'axios';
 

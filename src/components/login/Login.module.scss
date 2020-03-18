@@ -16,6 +16,17 @@
     margin-bottom: 10px;
     background: rgba(255, 255, 255, 1);
     border: none;
+    
+    @media only screen and (max-width: 500px) {
+        width: calc(100% - 10px);
+        border-radius: 0;
+    }
+
+    @media only screen and (min-width: 2048px) {
+        height: 50px;
+        width: 1000px;
+        font-size: 28pt;
+    }
 }
 
 .button {
@@ -24,6 +35,17 @@
     border-radius: 8px;
     border: none;
     background: #eff0f1;
+
+    @media only screen and (max-width: 500px) {
+        width: calc(100% - 10px);
+        border-radius: 0;
+    }
+
+    @media only screen and (min-width: 2048px) {
+        height: 50px;
+        width: 1010px;
+        font-size: 28pt;
+    }
 }
 
 .error {
@@ -35,4 +57,15 @@
     color: #a94442;
     background-color: #f2dede;
     border: 1px solid #ebccd1;
+
+    @media only screen and (max-width: 500px) {
+        width: calc(100% - 30px);
+        border-radius: 0;
+    }
+
+    @media only screen and (min-width: 2048px) {
+        height: 50px;
+        width: 980px;
+        font-size: 28pt;
+    }
 }
