@@ -60,7 +60,7 @@ class Login extends React.Component<any, LoginState> {
     }
 
     async submit() {
-        this.setState({loading: true});
+        this.setState({loading: true, error: undefined, resetPassword: false});
 
         try {
             const loginData: { username: string, password: string, newPassword?: string } = {
