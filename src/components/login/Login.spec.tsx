@@ -58,4 +58,29 @@ describe('Login', () => {
             });
         });
     });
+    
+    it('Displays password reset warning', async () => {
+        const component = mount(<Login/>);
+
+        const post = jest.spyOn(axios, 'post').mockRejectedValueOnce({
+            response: {
+                status: 401
+            }, message: 'Password must be reset.'
+        });
+
+        component.find('.button').at(0).simulate('click');
+
+        expect(post).toHaveBeenCalledWith('/api/users/login', {
+            username: '',
+            password: ''
+        });
+
+        return new Promise((resolve, reject) => {
+            setImmediate(() => {
+                component.update()
+                expect(component.find('.warning').exists()).toBe(true);
+                resolve();
+            });
+        });
+    });
 });
