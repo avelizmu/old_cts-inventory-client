@@ -36,7 +36,12 @@ describe('Login', () => {
     it('Displays error when failing to log in', async () => {
         const component = mount(<Login/>);
 
-        const post = jest.spyOn(axios, 'post').mockRejectedValueOnce({message: 'Test Message'});
+        const post = jest.spyOn(axios, 'post').mockRejectedValueOnce({
+            response: {
+                status: 400,
+            },
+            message: 'Test Message'
+        });
 
         component.find('.button').at(0).simulate('click');
 
