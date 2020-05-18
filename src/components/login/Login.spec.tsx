@@ -39,8 +39,10 @@ describe('Login', () => {
         const post = jest.spyOn(axios, 'post').mockRejectedValueOnce({
             response: {
                 status: 400,
-            },
-            message: 'Test Message'
+                data: {
+                    message: 'Test Message'
+                }
+            }
         });
 
         component.find('.button').at(0).simulate('click');
@@ -58,14 +60,17 @@ describe('Login', () => {
             });
         });
     });
-    
+
     it('Displays password reset warning', async () => {
         const component = mount(<Login/>);
 
         const post = jest.spyOn(axios, 'post').mockRejectedValueOnce({
             response: {
-                status: 401
-            }, message: 'Password must be reset.'
+                status: 401,
+                data: {
+                    message: 'Password must be reset.'
+                }
+            }
         });
 
         component.find('.button').at(0).simulate('click');
