@@ -43,15 +43,15 @@ class Login extends React.Component<any, LoginState> {
             }
             <input placeholder="Username" className={styles.input} onChange={(e) => {
                 this.setState({username: e.target.value})
-            }}/>
+            }} value={this.state.username}/>
             <input placeholder="Password" className={styles.input} type="password" onChange={(e) => {
                 this.setState({password: e.target.value})
-            }}/>
+            }} value={this.state.password}/>
             {
                 this.state.resetPassword ?
-                    <input placeholder="New Password" className={styles.input} onChange={(e) => {
+                    <input placeholder="New Password" className={styles.input} type="password" onChange={(e) => {
                         this.setState({newPassword: e.target.value})
-                    }}/> : <></>
+                    }} value={this.state.newPassword}/> : <></>
             }
             <button className={styles.button} onClick={this.submit}>Log In</button>
             <LoadingModal visible={this.state.loading} onClose={() => {
@@ -71,15 +71,23 @@ class Login extends React.Component<any, LoginState> {
                 loginData.newPassword = this.state.newPassword;
             }
             await axios.post('/api/users/login', loginData);
-        } catch (err) {
-            if (err.response.status === 401) {
-                this.setState({resetPassword: true})
-            } else {
-                this.setState({error: err.message});
-            }
-        }
 
-        this.setState({loading: false});
+            // TODO navigate to home page
+        } catch (err) {
+            let clearPassword = true;
+            if (err.response.status === 401) {
+                if (err.response.data.message === 'Password must be reset.') {
+                    this.setState({resetPassword: true})
+                    clearPassword = false;
+                } else {
+                    this.setState({error: 'Invalid username or password.'})
+                }
+            } else {
+                this.setState({error: err.response.data.message});
+            }
+
+            this.setState({loading: false, newPassword: undefined, password: clearPassword ? '' : this.state.password});
+        }
     }
 }
 
