@@ -56,6 +56,7 @@ describe('Login', () => {
             setImmediate(() => {
                 component.update()
                 expect(component.find('.error').exists()).toBe(true);
+                expect(component.find('.error').text()).toBe('Test Message');
                 resolve();
             });
         });
@@ -84,6 +85,8 @@ describe('Login', () => {
             setImmediate(() => {
                 component.update()
                 expect(component.find('.warning').exists()).toBe(true);
+                expect(component.find('.warning').text()).toBe('You must set a new password');
+                expect(component.find('.input').length).toBe(3);
                 resolve();
             });
         });
