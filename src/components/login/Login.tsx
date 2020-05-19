@@ -2,6 +2,11 @@ import React from 'react';
 import styles from './Login.module.scss';
 import LoadingModal from "../modals/loadingModal/LoadingModal";
 import axios from 'axios';
+import {AuthenticateActionCreator, User} from "../../redux/actions/user";
+import {connect} from 'react-redux';
+import {authenticateActionCreator} from "../../redux/actions/user";
+import {IAppState} from "../../redux/store";
+import {Redirect} from "react-router";
 
 type LoginState = {
     username: string,
@@ -12,7 +17,12 @@ type LoginState = {
     resetPassword: boolean
 }
 
-class Login extends React.Component<any, LoginState> {
+type LoginProps = {
+    user: User | undefined,
+    login: AuthenticateActionCreator
+}
+
+class Login extends React.Component<LoginProps, LoginState> {
 
     state: LoginState = {
         username: '',
@@ -30,6 +40,10 @@ class Login extends React.Component<any, LoginState> {
     }
 
     render(): React.ReactNode {
+        console.log(this.props.user);
+        if (this.props.user) {
+            return <Redirect to={'/home'}/>
+        }
         return <div className={styles.container}>
             {
                 this.state.error ? <div className={styles.error}>
@@ -70,9 +84,16 @@ class Login extends React.Component<any, LoginState> {
             if (this.state.newPassword) {
                 loginData.newPassword = this.state.newPassword;
             }
-            await axios.post('/api/users/login', loginData);
+            const user: {
+                id: number,
+                username: string,
+                name: string,
+                pendingPasswordReset: boolean,
+                createdAt: string,
+                updatedAt: string
+            } = (await axios.post('/api/users/login', loginData)).data;
 
-            // TODO navigate to home page
+            this.props.login(user);
         } catch (err) {
             let clearPassword = true;
             if (err.response.status === 401) {
@@ -91,4 +112,6 @@ class Login extends React.Component<any, LoginState> {
     }
 }
 
-export default Login;
+const mapStateToProps = (state: IAppState) => ({user: state.user});
+
+export default connect(mapStateToProps, {login: authenticateActionCreator})(Login);
