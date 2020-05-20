@@ -1,14 +1,15 @@
 import React from 'react';
 import {mount} from 'enzyme';
-import Login from "./Login";
+import {Login} from "./Login";
 import axios from 'axios';
 import mock = jest.mock;
+import store from "../../redux/store";
 
 mock('axios');
 
 describe('Login', () => {
     it('Calls POST /api/users/login with empty body when no credentials provided', async () => {
-        const component = mount(<Login/>);
+        const component = mount(<Login user={null} login={jest.fn()}/>);
 
         const post = jest.spyOn(axios, 'post').mockResolvedValueOnce({});
         component.find('.button').at(0).simulate('click');
@@ -19,7 +20,7 @@ describe('Login', () => {
     });
 
     it('Calls POST /api/users/login with credentials with they are provided', async () => {
-        const component = mount(<Login/>);
+        const component = mount(<Login user={null} login={jest.fn()}/>);
 
         const post = jest.spyOn(axios, 'post').mockResolvedValueOnce({});
 
@@ -34,7 +35,7 @@ describe('Login', () => {
     });
 
     it('Displays error when failing to log in', async () => {
-        const component = mount(<Login/>);
+        const component = mount(<Login user={null} login={jest.fn()}/>);
 
         const post = jest.spyOn(axios, 'post').mockRejectedValueOnce({
             response: {
@@ -63,7 +64,7 @@ describe('Login', () => {
     });
 
     it('Displays password reset warning', async () => {
-        const component = mount(<Login/>);
+        const component = mount(<Login user={null} login={jest.fn()}/>);
 
         const post = jest.spyOn(axios, 'post').mockRejectedValueOnce({
             response: {

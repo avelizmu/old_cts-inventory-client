@@ -22,7 +22,7 @@ type LoginProps = {
     login: AuthenticateActionCreator
 }
 
-class Login extends React.Component<LoginProps, LoginState> {
+export class Login extends React.Component<LoginProps, LoginState> {
 
     state: LoginState = {
         username: '',
@@ -40,7 +40,6 @@ class Login extends React.Component<LoginProps, LoginState> {
     }
 
     render(): React.ReactNode {
-        console.log(this.props.user);
         if (this.props.user) {
             return <Redirect to={'/home'}/>
         }
