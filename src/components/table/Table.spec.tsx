@@ -46,4 +46,26 @@ describe('Table', () => {
             expect(updateFunction).toHaveBeenLastCalledWith('first', dataEntry.first);
         }
     });
+
+    it('Sorts the data correctly', () => {
+        const headersData = [{key: 'first', display: 'Header 1'}, {key: 'second', display: 'Header 2'}];
+        const data = [{id: 0, first: '12345', second: "67890"}, {id: 1, first: '34567', second: '89012'}];
+        const updateSortingFunction = jest.fn((key: string, direction: string) => {
+        });
+
+        const component = mount(<Table data={data} headers={headersData} updateSorting={updateSortingFunction}/>);
+
+        for (let header of headersData) {
+            const headerWrapper = component.find('.headerCell').filterWhere(x => x.text().startsWith(header.display));
+            expect(headerWrapper.exists()).toBe(true);
+            expect(headerWrapper.text()).toBe(header.display);
+            headerWrapper.simulate('click')
+            expect(headerWrapper.text()).toBe(`${header.display}▼`);
+            headerWrapper.simulate('click')
+            expect(headerWrapper.text()).toBe(`${header.display}▲`);
+            headerWrapper.simulate('click')
+            expect(headerWrapper.text()).toBe(`${header.display}▼`);
+        }
+
+    })
 });

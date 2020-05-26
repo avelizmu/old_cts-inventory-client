@@ -17,17 +17,63 @@ export type TableProps = {
     update?: (
         key: string,
         filter: string
-    ) => void
+    ) => void,
+    updateSorting?: (key: string, direction: string) => void
 }
 
-class Table extends React.Component<TableProps, any> {
+export type TableState = {
+    sorting?: {
+        key: string,
+        direction: string
+    }
+}
+
+class Table extends React.Component<TableProps, TableState> {
+
+    state: TableState = {};
 
     render(): React.ReactNode {
         return <div className={styles.container}>
             <div className={styles.headerRow}>
                 {
-                    this.props.headers.map(header => <div key={header.key}
-                                                          className={styles.headerCell}>{header.display}</div>)
+                    this.props.headers.map(header =>
+                        <div key={header.key} className={styles.headerCell} onClick={() => {
+                            if (this.state.sorting?.key === header.key) {
+                                if (this.state.sorting.direction === 'DESC') {
+                                    this.setState({
+                                        sorting: {
+                                            key: header.key,
+                                            direction: 'ASC'
+                                        }
+                                    })
+                                    this.props.updateSorting?.(header.key, 'ASC');
+                                } else {
+                                    this.setState({
+                                        sorting: {
+                                            key: header.key,
+                                            direction: 'DESC'
+                                        }
+                                    })
+                                    this.props.updateSorting?.(header.key, 'DESC');
+                                }
+                            } else {
+                                this.setState({
+                                    sorting: {
+                                        key: header.key,
+                                        direction: 'DESC'
+                                    }
+                                })
+                                this.props.updateSorting?.(header.key, 'DESC');
+                            }
+                        }}>
+                            {header.display}
+                            {
+                                header.key === this.state.sorting?.key ? (
+                                    this.state.sorting.direction === 'ASC' ? '▲' : '▼'
+                                ) : ''
+                            }
+                        </div>
+                    )
                 }
             </div>
             <div className={styles.headerRow}>
@@ -36,9 +82,7 @@ class Table extends React.Component<TableProps, any> {
                         <FilterList/>
                         <input className={styles.filterInput} onChange={async (e) => {
                             const value = e.target.value;
-                            if (this.props.update) {
-                                this.props.update(header.key, value);
-                            }
+                            this.props.update?.(header.key, value);
                         }}/>
                     </div>)
                 }
