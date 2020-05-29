@@ -3,7 +3,6 @@ import {mount} from 'enzyme';
 import {Login} from "./Login";
 import axios from 'axios';
 import mock = jest.mock;
-import store from "../../redux/store";
 
 mock('axios');
 

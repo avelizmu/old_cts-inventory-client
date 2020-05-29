@@ -10,7 +10,7 @@ export type TableProps = {
         key: string,
         display: string
     }[],
-    data: {
+    data?: {
         id: string | number,
         [key: string]: any
     }[],
@@ -88,7 +88,7 @@ class Table extends React.Component<TableProps, TableState> {
                 }
             </div>
             {
-                this.props.data.map(data => <div key={data.id} className={styles.dataRow}>
+                this.props.data?.map(data => <div key={data.id} className={styles.dataRow}>
                     {
                         this.props.headers.map(header => <div key={header.key} className={styles.dataCell}>
                             {
