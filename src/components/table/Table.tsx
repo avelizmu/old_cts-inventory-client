@@ -33,7 +33,7 @@ class Table extends React.Component<TableProps, TableState> {
     state: TableState = {};
 
     render(): React.ReactNode {
-        return <div className={styles.container}>
+        return <>
             <div className={styles.headerRow}>
                 {
                     this.props.headers.map(header =>
@@ -98,7 +98,7 @@ class Table extends React.Component<TableProps, TableState> {
                     }
                 </div>)
             }
-        </div>
+        </>
     }
 }
 
