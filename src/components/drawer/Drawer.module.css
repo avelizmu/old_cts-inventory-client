@@ -1,0 +1,91 @@
+.container {
+    padding-top: 40px;
+    height: calc(100% - 40px);
+}
+
+@media only screen and (max-width: 1023px) {
+    .container {
+        --topBarVisility: none;
+    }
+}
+
+@media only screen and (min-width: 1024px) {
+    .container {
+        --drawerVisibility: none;
+    }
+}
+
+.topBar {
+    height: 30px;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 10px;
+    display: flex;
+    align-items: center;
+    background-color: #3a70b8;
+    z-index: 2;
+}
+
+.topBarItem {
+    display: var(--topBarVisility);
+    color: white;
+    font-size: 14pt;
+    background: #5889ca;
+    padding: 3px 9px 3px 8px;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-right: 8px;
+}
+
+.drawerIcon {
+    color: white;
+    cursor: pointer;
+    display: var(--drawerVisibility)
+}
+
+.drawer {
+    display: var(--drawerVisibility);
+    height: 100%;
+    width: 90%;
+    background: #5889ca;
+    position: fixed;
+    top: 40px;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease-in;
+    z-index: 2;
+}
+
+.drawer.drawerOpen {
+    transform: translateX(0);
+}
+
+.drawerItem {
+    width: calc(100% - 10px);
+    padding-left: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    color: white;
+    font-size: 14pt;
+    border-bottom: 1px solid #a7a7a7;
+}
+
+.drawerItem:hover {
+    background-color: #87aad8;
+}
+
+.overlay {
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.6);
+    top: 40px;
+    bottom: 0;
+    width: 100%;
+    z-index: 1;
+    display: var(--drawerVisibility);
+}
+
+.content {
+    height: 100%;
+}
