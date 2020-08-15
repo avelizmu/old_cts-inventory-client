@@ -20,5 +20,10 @@ spec:
           - path: /
             pathType: ImplementationSpecific
             backend:
-              serviceName: "REPLACEME_SERVICE"
+              serviceName: cts-inventory-master-client
+              servicePort: 80
+          - path: /(static/.*)
+            pathType: ImplementationSpecific
+            backend:
+              serviceName: cts-inventory-master-client
               servicePort: 80
