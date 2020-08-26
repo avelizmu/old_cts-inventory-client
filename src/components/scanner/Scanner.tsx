@@ -24,6 +24,8 @@ class Scanner extends React.Component<any, ScannerState> {
         });
 
         this.codeReader.decodeFromVideoDevice(devices[devices.length - 1].deviceId, 'video', (result, error) => {
+            console.log(result);
+            console.error(error);
             if (result) {
                 alert(result.getText());
             }
