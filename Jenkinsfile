@@ -31,6 +31,7 @@ spec:
                 container('node') {
                     sh 'npm ci'
                     sh 'npm test'
+                    sh 'cat src/components/scanner/Scanner.tsx'
                 }
             }
         }
