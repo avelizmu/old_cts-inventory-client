@@ -23,6 +23,7 @@ class Scanner extends React.Component<any, ScannerState> {
             devices
         });
 
+        console.log('Starting stream');
         this.codeReader.decodeFromVideoDevice(devices[devices.length - 1].deviceId, 'video', (result, error) => {
             console.log(result);
             console.error(error);
@@ -30,6 +31,7 @@ class Scanner extends React.Component<any, ScannerState> {
                 alert(result.getText());
             }
         });
+        console.log('Stream started');
     }
 
     render(): React.ReactNode {
