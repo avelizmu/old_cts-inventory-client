@@ -5,7 +5,11 @@ export type ScannerState = {
     devices: MediaDeviceInfo[]
 }
 
-class Scanner extends React.Component<any, ScannerState> {
+export type ScannerProps = {
+    onScan: (value: string) => void
+}
+
+class Scanner extends React.Component<ScannerProps, ScannerState> {
     state: ScannerState = {
         devices: []
     }
@@ -23,19 +27,15 @@ class Scanner extends React.Component<any, ScannerState> {
             devices
         });
 
-        console.log('Starting stream');
         this.codeReader.decodeFromVideoDevice(devices[devices.length - 1].deviceId, 'video', (result, error) => {
-            console.log(result);
-            console.error(error);
             if (result) {
-                alert(result.getText());
+                this.props.onScan(result.getText());
             }
         });
-        console.log('Stream started');
     }
 
     render(): React.ReactNode {
-        return <video id='video' style={{width: '100%', height: '100%'}}/>;
+        return <video id='video' style={{height: '100%'}}/>;
     }
 }
 
