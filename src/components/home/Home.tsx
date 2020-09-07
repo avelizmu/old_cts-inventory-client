@@ -1,6 +1,8 @@
 import React from 'react';
 import Table from "../table/Table";
 import axios from 'axios';
+import styles from './Home.module.css';
+import Scanner from "../scanner/Scanner";
 
 export type HomeState = {
     data?: {
@@ -19,7 +21,8 @@ export type HomeState = {
     sort?: {
         key: string,
         direction: string
-    }
+    },
+    scanning: boolean
 }
 
 class Home extends React.Component<any, HomeState> {
@@ -30,9 +33,9 @@ class Home extends React.Component<any, HomeState> {
         this.search = this.search.bind(this);
     }
 
-
-    state: HomeState = {}
-
+    state: HomeState = {
+        scanning: false
+    }
 
     async componentDidMount() {
         const initialData = (await axios.post('/api/inventory/search')).data;
@@ -42,53 +45,75 @@ class Home extends React.Component<any, HomeState> {
     }
 
     render(): React.ReactNode {
-        return <Table headers={[
+        return <>
             {
-                key: 'room',
-                display: 'Room #'
-            },
-            {
-                key: 'number',
-                display: 'PC #'
-            },
-            {
-                key: 'serial',
-                display: 'Serial #'
-            },
-            {
-                key: 'model',
-                display: 'Model'
-            },
-            {
-                key: 'cpu',
-                display: 'CPU'
-            },
-            {
-                key: 'clockSpeed',
-                display: 'Clock Speed'
-            },
-            {
-                key: 'ram',
-                display: 'RAM'
+                !this.state.scanning && <div>
+                    <Table headers={[
+                        {
+                            key: 'room',
+                            display: 'Room #'
+                        },
+                        {
+                            key: 'number',
+                            display: 'PC #'
+                        },
+                        {
+                            key: 'serial',
+                            display: 'Serial #'
+                        },
+                        {
+                            key: 'model',
+                            display: 'Model'
+                        },
+                        {
+                            key: 'cpu',
+                            display: 'CPU'
+                        },
+                        {
+                            key: 'clockSpeed',
+                            display: 'Clock Speed'
+                        },
+                        {
+                            key: 'ram',
+                            display: 'RAM'
+                        }
+                    ]} data={this.state.data} update={(key: string, filter: string) => {
+                        this.setState((previousState) => {
+                            return {
+                                ...previousState,
+                                filters: {
+                                    ...previousState.filters,
+                                    [key]: filter
+                                }
+                            }
+                        }, this.search)
+                    }} updateSorting={(key, direction) => {
+                        this.setState({
+                            sort: {
+                                key,
+                                direction
+                            }
+                        }, this.search)
+                    }}/>;
+                    <i onClick={() => {
+                        this.setState({scanning: true});
+                    }} className={[styles.button, styles.scanButton, 'material-icons'].join(' ')}>
+                        search
+                    </i>
+                </div>
             }
-        ]} data={this.state.data} update={(key: string, filter: string) => {
-            this.setState((previousState) => {
-                return {
-                    ...previousState,
-                    filters: {
-                        ...previousState.filters,
-                        [key]: filter
-                    }
-                }
-            }, this.search)
-        }} updateSorting={(key, direction) => {
-            this.setState({
-                sort: {
-                    key,
-                    direction
-                }
-            }, this.search)
-        }}/>;
+            {
+                this.state.scanning && <div>
+                    <Scanner onScan={() => {
+                    }}/>
+                    <i onClick={() => {
+                        this.setState({scanning: false});
+                    }} className={[styles.button, styles.backButton, 'material-icons'].join(' ')}>
+                        keyboard_backspace
+                    </i>
+                </div>
+            }
+        </>
     }
 
     async search() {
