@@ -1,5 +1,6 @@
 import React from 'react';
 import {BrowserBarcodeReader} from '@zxing/library';
+import styles from './Scanner.module.css';
 
 export type ScannerState = {
     devices: MediaDeviceInfo[]
@@ -26,6 +27,9 @@ class Scanner extends React.Component<ScannerProps, ScannerState> {
         this.setState({
             devices
         });
+        if (!devices.length) {
+            return;
+        }
 
         this.codeReader.decodeFromVideoDevice(devices[devices.length - 1].deviceId, 'video', (result, error) => {
             if (result) {
@@ -35,7 +39,9 @@ class Scanner extends React.Component<ScannerProps, ScannerState> {
     }
 
     render(): React.ReactNode {
-        return <video id='video' style={{height: '100%'}}/>;
+        return this.state.devices.length ? <video id='video' style={{height: '100%'}}/> : <div className={styles.error}>
+            No camera found
+        </div>;
     }
 }
 
