@@ -1,0 +1,27 @@
+.button {
+    position: fixed;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: #3a70b8;
+    border: 0;
+    font-size: 28px;
+    padding: 6px;
+    color: #ffffff;
+    cursor: pointer;
+    user-select: none;
+}
+
+.button:hover {
+    box-shadow: 0 0 23px 1px rgba(0, 0, 0, 0.75);
+}
+
+.confirmButton {
+    bottom: 15px;
+    right: 15px;
+}
+
+.backButton {
+    top: 25px;
+    left: 15px;
+}
