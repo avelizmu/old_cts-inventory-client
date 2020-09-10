@@ -25,3 +25,7 @@
     top: 25px;
     left: 15px;
 }
+
+.fullHeight {
+    height: 100%;
+}

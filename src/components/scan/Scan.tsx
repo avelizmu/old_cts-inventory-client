@@ -18,7 +18,7 @@ class Scan extends React.Component<any, ScanState> {
     }
 
     render(): React.ReactNode {
-        return <div>
+        return <div className={styles.fullHeight}>
             {
                 (this.state.noCameraFound || this.state.cancelled) ? <Redirect to="/"/> : <></>
             }
@@ -30,7 +30,7 @@ class Scan extends React.Component<any, ScanState> {
                 }}/>
             }
             {
-                this.state.room && <div>
+                this.state.room && <div className={styles.fullHeight}>
                     <Scanner onScan={(value) => {
                         this.setState((prevState, props) => {
                             const newState = {...prevState}
