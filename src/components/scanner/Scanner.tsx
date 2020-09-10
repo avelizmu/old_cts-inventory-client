@@ -7,7 +7,8 @@ export type ScannerState = {
 }
 
 export type ScannerProps = {
-    onScan: (value: string) => void
+    onScan: (value: string) => void,
+    onNoCameraFound?: () => void
 }
 
 class Scanner extends React.Component<ScannerProps, ScannerState> {
@@ -28,6 +29,7 @@ class Scanner extends React.Component<ScannerProps, ScannerState> {
             devices
         });
         if (!devices.length) {
+            this.props.onNoCameraFound?.();
             return;
         }
 
