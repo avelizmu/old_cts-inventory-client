@@ -20,7 +20,7 @@ class Scan extends React.Component<any, ScanState> {
     render(): React.ReactNode {
         return <div className={styles.fullHeight}>
             {
-                (this.state.noCameraFound || this.state.cancelled) ? <Redirect to="/"/> : <></>
+                (this.state.noCameraFound || this.state.cancelled) ? <Redirect to="/" push/> : <></>
             }
             {
                 <InputModal visible={!this.state.room} prompt="Room Number" onConfirm={(room) => {
@@ -46,7 +46,9 @@ class Scan extends React.Component<any, ScanState> {
                             done
                         </i> : <></>
                     }
-                    <i className={[styles.button, styles.backButton, 'material-icons'].join(' ')}>
+                    <i onClick={() => {
+                        this.setState({cancelled: true})
+                    }} className={[styles.button, styles.backButton, 'material-icons'].join(' ')}>
                         keyboard_backspace
                     </i>
                 </div>
