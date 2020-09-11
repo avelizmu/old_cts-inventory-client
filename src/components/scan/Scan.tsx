@@ -41,10 +41,15 @@ class Scan extends React.Component<any, ScanState> {
                         this.setState({noCameraFound: true})
                     }}/>
                     {
-                        this.state.scans.length ? <i onClick={() => {
-                        }} className={[styles.button, styles.confirmButton, 'material-icons'].join(' ')}>
-                            done
-                        </i> : <></>
+                        this.state.scans.length ? <div className={[styles.button, styles.confirmButton].join(' ')}>
+                            <i onClick={() => {
+                            }} className={['material-icons'].join(' ')}>
+                                done
+                            </i>
+                            {
+                                this.state.scans.length
+                            }
+                        </div> : <></>
                     }
                     <i onClick={() => {
                         this.setState({cancelled: true})

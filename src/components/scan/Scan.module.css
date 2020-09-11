@@ -1,8 +1,5 @@
 .button {
     position: fixed;
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
     background-color: #3a70b8;
     border: 0;
     font-size: 28px;
@@ -19,11 +16,18 @@
 .confirmButton {
     bottom: 15px;
     right: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 10px;
 }
 
 .backButton {
     top: 25px;
     left: 15px;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
 }
 
 .fullHeight {
