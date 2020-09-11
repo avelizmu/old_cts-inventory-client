@@ -1,5 +1,5 @@
 import React from 'react';
-import {BrowserBarcodeReader} from '@zxing/library';
+import {BrowserMultiFormatReader} from '@zxing/library';
 import styles from './Scanner.module.css';
 
 export type ScannerState = {
@@ -16,11 +16,11 @@ class Scanner extends React.Component<ScannerProps, ScannerState> {
         devices: []
     }
 
-    codeReader: BrowserBarcodeReader;
+    codeReader: BrowserMultiFormatReader;
 
     constructor(props: any) {
         super(props);
-        this.codeReader = new BrowserBarcodeReader();
+        this.codeReader = new BrowserMultiFormatReader();
     }
 
     async componentDidMount() {
