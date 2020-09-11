@@ -41,9 +41,10 @@ class Scanner extends React.Component<ScannerProps, ScannerState> {
     }
 
     render(): React.ReactNode {
-        return this.state.devices.length ? <video id='video' style={{height: '100%'}}/> : <div className={styles.error}>
-            No camera found
-        </div>;
+        return this.state.devices.length ? <video id='video' style={{height: '100%', width: '100%'}}/> :
+            <div className={styles.error}>
+                No camera found
+            </div>;
     }
 }
 
