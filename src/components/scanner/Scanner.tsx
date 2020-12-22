@@ -33,7 +33,13 @@ class Scanner extends React.Component<ScannerProps, ScannerState> {
             return;
         }
 
-        this.codeReader.decodeFromVideoDevice(devices[devices.length - 1].deviceId, 'video', (result, error) => {
+        this.codeReader.decodeFromConstraints({
+            video: {
+                facingMode: "environment",
+                width: {ideal: 4096},
+                height: {ideal: 2160}
+            }
+        }, 'video', (result, error) => {
             if (result) {
                 this.props.onScan(result.getText());
             }
