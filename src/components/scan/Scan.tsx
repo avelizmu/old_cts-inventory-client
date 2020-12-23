@@ -7,21 +7,40 @@ import {Redirect} from "react-router";
 type ScanState = {
     room?: string,
     scans: string[],
+    withInfo: {
+        room: string,
+        number: string,
+        domain: string,
+        brand: string,
+        model: string,
+        serial: string,
+        windowsVersion: string,
+        windowsBuild: string,
+        windowsRelease: string,
+        cpu: string,
+        clockSpeed: string,
+        cpuCores: string,
+        ram: string,
+        disk: string
+    }[],
+    workingNumber?: string,
     noCameraFound?: boolean,
-    cancelled?: boolean
+    cancelled?: boolean,
+    processing?: boolean,
 }
 
 class Scan extends React.Component<any, ScanState> {
 
     state: ScanState = {
-        scans: []
+        scans: [],
+        withInfo: [],
     }
 
     render(): React.ReactNode {
+        if (this.state.noCameraFound || this.state.cancelled) {
+            return <Redirect to="/" push/>
+        }
         return <div className={styles.fullHeight}>
-            {
-                (this.state.noCameraFound || this.state.cancelled) ? <Redirect to="/" push/> : <></>
-            }
             {
                 <InputModal visible={!this.state.room} prompt="Room Number" onConfirm={(room) => {
                     this.setState({room})
@@ -30,24 +49,65 @@ class Scan extends React.Component<any, ScanState> {
                 }}/>
             }
             {
-                this.state.room && <div className={styles.fullHeight}>
+                this.state.room && !this.state.processing && <div className={styles.fullHeight}>
+                    <div className={styles.instructions}>
+                        {
+                            this.state.workingNumber ? "Please scan the qr code on the screen" : "Please scan the computer's barcode"
+                        }
+                    </div>
                     <Scanner onScan={(value) => {
-                        this.setState((prevState, props) => {
-                            const newState = {...prevState}
-                            newState.scans.push(value);
-                            return newState;
-                        })
+                        if (!this.state.workingNumber) {
+                            if (/\d+/.test(value) && !this.state.scans.includes(value)) {
+                                this.setState((prevState, props) => {
+                                    const newState = {...prevState}
+                                    newState.scans.push(value);
+                                    newState.workingNumber = value;
+                                    return newState;
+                                });
+                            }
+                        } else {
+                            const informationPattern = /DOMAIN:(.+)\nBRAND:(.+)\nMODEL:(.+)\nSERIALNUMBER:(.+)\nWINDOWSVERSION:(.+)\nWINDOWSBUILD:(.+)\nWINDOWSRELEASE:(.+)\nCPUMODEL:(.+)\nCPUSPEED:(.+)\nCPUCORES:(.+)\nRAM:(.+)\nDISK:(.+)/;
+                            if (informationPattern.test(value)) {
+                                const [, domain, brand, model, serial, windowsVersion, windowsBuild, windowsRelease, cpu, clockSpeed, cpuCores, ram, disk] = value.match(informationPattern) as string[];
+                                const json = {
+                                    room: this.state.room!,
+                                    number: this.state.workingNumber,
+                                    domain,
+                                    brand,
+                                    model,
+                                    serial,
+                                    windowsVersion,
+                                    windowsBuild,
+                                    windowsRelease,
+                                    cpu,
+                                    clockSpeed,
+                                    cpuCores,
+                                    ram,
+                                    disk
+                                };
+
+                                this.setState((prevState, props) => {
+                                    const newState = {...prevState}
+                                    newState.withInfo.push(json);
+                                    newState.workingNumber = undefined;
+
+                                    return newState;
+                                });
+                            }
+                        }
                     }} onNoCameraFound={() => {
                         this.setState({noCameraFound: true})
                     }}/>
                     {
-                        this.state.scans.length ? <div className={[styles.button, styles.confirmButton].join(' ')}>
+                        this.state.withInfo.length ? <div className={[styles.button, styles.confirmButton].join(' ')}>
                             <i onClick={() => {
+                                this.setState({processing: true});
+
                             }} className={['material-icons'].join(' ')}>
                                 done
                             </i>
                             {
-                                this.state.scans.length
+                                this.state.withInfo.length
                             }
                         </div> : <></>
                     }
