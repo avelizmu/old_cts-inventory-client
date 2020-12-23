@@ -1,5 +1,5 @@
 import React from 'react';
-import {BrowserMultiFormatReader} from '@zxing/library';
+import {BarcodeFormat, BrowserMultiFormatReader, DecodeHintType} from '@zxing/library';
 import styles from './Scanner.module.css';
 
 export type ScannerState = {
@@ -20,6 +20,8 @@ class Scanner extends React.Component<ScannerProps, ScannerState> {
 
     constructor(props: any) {
         super(props);
+        const hints = new Map<DecodeHintType, any>();
+        hints.set(2, [11, 4]);
         this.codeReader = new BrowserMultiFormatReader();
     }
 
@@ -36,8 +38,6 @@ class Scanner extends React.Component<ScannerProps, ScannerState> {
         this.codeReader.decodeFromConstraints({
             video: {
                 facingMode: "environment",
-                width: {ideal: 4096},
-                height: {ideal: 2160}
             }
         }, 'video', (result, error) => {
             if (result) {
@@ -47,7 +47,8 @@ class Scanner extends React.Component<ScannerProps, ScannerState> {
     }
 
     render(): React.ReactNode {
-        return this.state.devices.length ? <video id='video' style={{height: '100%', width: '100%'}}/> :
+        return this.state.devices.length ?
+            <video id='video' style={{height: '100%', width: '100%', objectFit: 'cover'}}/> :
             <div className={styles.error}>
                 No camera found
             </div>;
