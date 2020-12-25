@@ -58,6 +58,9 @@ class Scan extends React.Component<any, ScanState> {
                     <Scanner onScan={(value) => {
                         if (!this.state.workingNumber) {
                             if (/\d+/.test(value) && !this.state.scans.includes(value)) {
+                                const sound = document.getElementById('beep') as HTMLAudioElement;
+                                sound!.play();
+                                
                                 this.setState((prevState, props) => {
                                     const newState = {...prevState}
                                     newState.scans.push(value);
@@ -68,6 +71,9 @@ class Scan extends React.Component<any, ScanState> {
                         } else {
                             const informationPattern = /DOMAIN:(.+)\nBRAND:(.+)\nMODEL:(.+)\nSERIALNUMBER:(.+)\nWINDOWSVERSION:(.+)\nWINDOWSBUILD:(.+)\nWINDOWSRELEASE:(.+)\nCPUMODEL:(.+)\nCPUSPEED:(.+)\nCPUCORES:(.+)\nRAM:(.+)\nDISK:(.+)/;
                             if (informationPattern.test(value)) {
+                                const sound = document.getElementById('beep') as HTMLAudioElement;
+                                sound!.play();
+
                                 const [, domain, brand, model, serial, windowsVersion, windowsBuild, windowsRelease, cpu, clockSpeed, cpuCores, ram, disk] = value.match(informationPattern) as string[];
                                 const json = {
                                     room: this.state.room!,
