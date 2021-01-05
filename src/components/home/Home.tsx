@@ -3,6 +3,7 @@ import Table from "../table/Table";
 import axios from 'axios';
 import styles from './Home.module.css';
 import Scanner from "../scanner/Scanner";
+import {Redirect} from "react-router";
 
 export type HomeState = {
     data?: {
@@ -103,15 +104,7 @@ class Home extends React.Component<any, HomeState> {
                 </div>
             }
             {
-                this.state.scanning && <div>
-                    <Scanner onScan={() => {
-                    }}/>
-                    <i onClick={() => {
-                        this.setState({scanning: false});
-                    }} className={[styles.button, styles.backButton, 'material-icons'].join(' ')}>
-                        keyboard_backspace
-                    </i>
-                </div>
+                this.state.scanning && <Redirect to={'/scan'}/>
             }
         </>
     }

@@ -49,17 +49,19 @@ class Scan extends React.Component<any, ScanState> {
                 }}/>
             }
             {
+                this.state.room && <div className={styles.instructions}>
+                    {
+                        this.state.workingNumber ? "Please scan the qr code on the screen" : "Please scan the computer's barcode"
+                    }
+                </div>
+            }
+            {
                 this.state.room && !this.state.processing && <div className={styles.fullHeight}>
-                    <div className={styles.instructions}>
-                        {
-                            this.state.workingNumber ? "Please scan the qr code on the screen" : "Please scan the computer's barcode"
-                        }
-                    </div>
                     <Scanner onScan={(value) => {
                         if (!this.state.workingNumber) {
                             if (/\d+/.test(value) && !this.state.scans.includes(value)) {
                                 const sound = document.getElementById('beep') as HTMLAudioElement;
-                                sound!.play();
+                                sound!.play().then();
                                 
                                 this.setState((prevState, props) => {
                                     const newState = {...prevState}
@@ -72,7 +74,7 @@ class Scan extends React.Component<any, ScanState> {
                             const informationPattern = /DOMAIN:(.+)\nBRAND:(.+)\nMODEL:(.+)\nSERIALNUMBER:(.+)\nWINDOWSVERSION:(.+)\nWINDOWSBUILD:(.+)\nWINDOWSRELEASE:(.+)\nCPUMODEL:(.+)\nCPUSPEED:(.+)\nCPUCORES:(.+)\nRAM:(.+)\nDISK:(.+)/;
                             if (informationPattern.test(value)) {
                                 const sound = document.getElementById('beep') as HTMLAudioElement;
-                                sound!.play();
+                                sound!.play().then();
 
                                 const [, domain, brand, model, serial, windowsVersion, windowsBuild, windowsRelease, cpu, clockSpeed, cpuCores, ram, disk] = value.match(informationPattern) as string[];
                                 const json = {
