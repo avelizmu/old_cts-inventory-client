@@ -40,9 +40,6 @@ export class Login extends React.Component<LoginProps, LoginState> {
     }
 
     render(): React.ReactNode {
-        if (this.props.user) {
-            return <Redirect to={'/home'}/>
-        }
         return <div className={styles.container}>
             {
                 this.state.error ? <div className={styles.error}>
@@ -67,8 +64,7 @@ export class Login extends React.Component<LoginProps, LoginState> {
                     }} value={this.state.newPassword}/> : <></>
             }
             <button className={styles.button} onClick={this.submit}>Log In</button>
-            <LoadingModal visible={this.state.loading} onClose={() => {
-            }}/>
+            <LoadingModal visible={this.state.loading}/>
         </div>
     }
 

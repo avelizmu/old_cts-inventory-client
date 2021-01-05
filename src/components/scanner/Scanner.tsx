@@ -1,20 +1,28 @@
 import React from 'react';
-import {BrowserBarcodeReader} from '@zxing/library';
+import {BarcodeFormat, BrowserMultiFormatReader, DecodeHintType} from '@zxing/library';
+import styles from './Scanner.module.css';
 
 export type ScannerState = {
     devices: MediaDeviceInfo[]
 }
 
-class Scanner extends React.Component<any, ScannerState> {
+export type ScannerProps = {
+    onScan: (value: string) => void,
+    onNoCameraFound?: () => void
+}
+
+class Scanner extends React.Component<ScannerProps, ScannerState> {
     state: ScannerState = {
         devices: []
     }
 
-    codeReader: BrowserBarcodeReader;
+    codeReader: BrowserMultiFormatReader;
 
     constructor(props: any) {
         super(props);
-        this.codeReader = new BrowserBarcodeReader();
+        const hints = new Map<DecodeHintType, any>();
+        hints.set(2, [11, 4]);
+        this.codeReader = new BrowserMultiFormatReader();
     }
 
     async componentDidMount() {
@@ -22,16 +30,28 @@ class Scanner extends React.Component<any, ScannerState> {
         this.setState({
             devices
         });
+        if (!devices.length) {
+            this.props.onNoCameraFound?.();
+            return;
+        }
 
-        this.codeReader.decodeFromVideoDevice(devices[devices.length - 1].deviceId, 'video', (result, error) => {
+        this.codeReader.decodeFromConstraints({
+            video: {
+                facingMode: "environment",
+            }
+        }, 'video', (result, error) => {
             if (result) {
-                alert(result.getText());
+                this.props.onScan(result.getText());
             }
         });
     }
 
     render(): React.ReactNode {
-        return <video id='video' style={{width: '100%', height: '100%'}}/>;
+        return this.state.devices.length ?
+            <video id='video' style={{height: '100%', width: '100%', objectFit: 'cover'}}/> :
+            <div className={styles.error}>
+                No camera found
+            </div>;
     }
 }
 

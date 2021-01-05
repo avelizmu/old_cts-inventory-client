@@ -4,7 +4,7 @@ import Modal from "../modal/Modal";
 
 type ModalProps = {
     visible: boolean,
-    onClose: () => void
+    onClose?: () => void
 }
 
 class LoadingModal extends React.Component<ModalProps, any> {

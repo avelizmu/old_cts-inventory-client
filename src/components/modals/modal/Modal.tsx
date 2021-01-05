@@ -3,7 +3,7 @@ import styles from './Modal.module.css';
 
 type ModalProps = {
     visible: boolean,
-    onClose: () => void
+    onClose?: () => void
 }
 
 class Modal extends React.Component<ModalProps, any> {

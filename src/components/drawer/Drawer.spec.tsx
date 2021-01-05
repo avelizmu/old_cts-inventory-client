@@ -8,7 +8,6 @@ mock('axios');
 describe('Drawer', () => {
 
     it('Top bar and drawer is populated properly', () => {
-        console.log(window.innerWidth);
         const component = mount(<Drawer menuItems={[
             {
                 name: 'Test',
