@@ -15,6 +15,7 @@ type ScanState = {
     noCameraFound?: boolean,
     cancelled?: boolean,
     processing?: boolean,
+    flashingInstructions: boolean,
 }
 
 type InformationScan = {
@@ -33,7 +34,6 @@ type InformationScan = {
 }
 
 function isInformatonScan(input: any): input is InformationScan {
-    console.log(typeof(input));
     return typeof(input) == "object" &&
         "domain" in input &&
         "brand" in input &&
@@ -54,6 +54,7 @@ class Scan extends React.Component<any, ScanState> {
     state: ScanState = {
         scans: [],
         withInfo: [],
+        flashingInstructions: false
     }
 
     render(): React.ReactNode {
@@ -69,7 +70,7 @@ class Scan extends React.Component<any, ScanState> {
                 }}/>
             }
             {
-                this.state.room && <div className={styles.instructions}>
+                this.state.room && <div className={this.state.flashingInstructions ? styles.instructionsFlash : styles.instructions}>
                     {
                         this.state.workingNumber ? "Please scan the qr code on the screen" : "Please scan the computer's barcode"
                     }
@@ -87,7 +88,12 @@ class Scan extends React.Component<any, ScanState> {
                                     const newState = {...prevState}
                                     newState.scans.push(value);
                                     newState.workingNumber = value;
+                                    newState.flashingInstructions = true;
                                     return newState;
+                                }, () => {
+                                    setTimeout(() => {
+                                        this.setState({flashingInstructions: false})
+                                    }, 2000);
                                 });
                             }
                         } else {
@@ -104,8 +110,13 @@ class Scan extends React.Component<any, ScanState> {
                                         number: this.state.workingNumber!
                                     });
                                     newState.workingNumber = undefined;
+                                    newState.flashingInstructions = true;
 
                                     return newState;
+                                }, () => {
+                                    setTimeout(() => {
+                                        this.setState({flashingInstructions: false})
+                                    }, 2000);
                                 });
                             }
                         }
