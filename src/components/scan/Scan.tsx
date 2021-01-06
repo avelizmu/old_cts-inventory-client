@@ -7,26 +7,46 @@ import {Redirect} from "react-router";
 type ScanState = {
     room?: string,
     scans: string[],
-    withInfo: {
+    withInfo: (InformationScan & {
         room: string,
-        number: string,
-        domain: string,
-        brand: string,
-        model: string,
-        serial: string,
-        windowsVersion: string,
-        windowsBuild: string,
-        windowsRelease: string,
-        cpu: string,
-        clockSpeed: string,
-        cpuCores: string,
-        ram: string,
-        disk: string
-    }[],
+        number: string
+    })[],
     workingNumber?: string,
     noCameraFound?: boolean,
     cancelled?: boolean,
     processing?: boolean,
+}
+
+type InformationScan = {
+    domain: string,
+    brand: string,
+    model: string,
+    serial: string,
+    windowsVersion: string,
+    windowsBuild: string,
+    windowsRelease: string,
+    cpu: number,
+    clockSpeed: number,
+    cpuCores: number,
+    ram: number,
+    disk: number
+}
+
+function isInformatonScan(input: any): input is InformationScan {
+    console.log(typeof(input));
+    return typeof(input) == "object" &&
+        "domain" in input &&
+        "brand" in input &&
+        "model" in input &&
+        "serial" in input &&
+        "windowsVersion" in input &&
+        "windowsBuild" in input &&
+        "windowsRelease" in input &&
+        "cpu" in input &&
+        "clockSpeed" in input &&
+        "cpuCores" in input &&
+        "ram" in input &&
+        "disk" in input
 }
 
 class Scan extends React.Component<any, ScanState> {
@@ -59,7 +79,7 @@ class Scan extends React.Component<any, ScanState> {
                 this.state.room && !this.state.processing && <div className={styles.fullHeight}>
                     <Scanner onScan={(value) => {
                         if (!this.state.workingNumber) {
-                            if (/\d+/.test(value) && !this.state.scans.includes(value)) {
+                            if (/^\d+$/.test(value) && !this.state.scans.includes(value)) {
                                 const sound = document.getElementById('beep') as HTMLAudioElement;
                                 sound!.play().then();
                                 
@@ -71,32 +91,18 @@ class Scan extends React.Component<any, ScanState> {
                                 });
                             }
                         } else {
-                            const informationPattern = /DOMAIN:(.+)\nBRAND:(.+)\nMODEL:(.+)\nSERIALNUMBER:(.+)\nWINDOWSVERSION:(.+)\nWINDOWSBUILD:(.+)\nWINDOWSRELEASE:(.+)\nCPUMODEL:(.+)\nCPUSPEED:(.+)\nCPUCORES:(.+)\nRAM:(.+)\nDISK:(.+)/;
-                            if (informationPattern.test(value)) {
+                            const json = JSON.parse(value);
+                            if(isInformatonScan(json)) {
                                 const sound = document.getElementById('beep') as HTMLAudioElement;
                                 sound!.play().then();
 
-                                const [, domain, brand, model, serial, windowsVersion, windowsBuild, windowsRelease, cpu, clockSpeed, cpuCores, ram, disk] = value.match(informationPattern) as string[];
-                                const json = {
-                                    room: this.state.room!,
-                                    number: this.state.workingNumber,
-                                    domain,
-                                    brand,
-                                    model,
-                                    serial,
-                                    windowsVersion,
-                                    windowsBuild,
-                                    windowsRelease,
-                                    cpu,
-                                    clockSpeed,
-                                    cpuCores,
-                                    ram,
-                                    disk
-                                };
-
                                 this.setState((prevState, props) => {
                                     const newState = {...prevState}
-                                    newState.withInfo.push(json);
+                                    newState.withInfo.push({
+                                        ...json,
+                                        room: this.state.room!,
+                                        number: this.state.workingNumber!
+                                    });
                                     newState.workingNumber = undefined;
 
                                     return newState;
