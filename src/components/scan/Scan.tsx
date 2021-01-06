@@ -3,6 +3,8 @@ import styles from './Scan.module.css';
 import InputModal from "../modals/inputModal/InputModal";
 import Scanner from "../scanner/Scanner";
 import {Redirect} from "react-router";
+import LoadingModal from "../modals/loadingModal/LoadingModal";
+import axios from 'axios';
 
 type ScanState = {
     room?: string,
@@ -14,7 +16,7 @@ type ScanState = {
     workingNumber?: string,
     noCameraFound?: boolean,
     cancelled?: boolean,
-    processing?: boolean,
+    processing: boolean,
     flashingInstructions: boolean,
 }
 
@@ -54,7 +56,19 @@ class Scan extends React.Component<any, ScanState> {
     state: ScanState = {
         scans: [],
         withInfo: [],
-        flashingInstructions: false
+        flashingInstructions: false,
+        processing: false
+    }
+
+    constructor(props: any) {
+        super(props);
+        this.sendScans = this.sendScans.bind(this);
+    }
+
+    async sendScans() {
+        await Promise.all(this.state.withInfo.map(inp => {
+            return axios.post('/api/inventory', inp);
+        }));
     }
 
     render(): React.ReactNode {
@@ -62,6 +76,7 @@ class Scan extends React.Component<any, ScanState> {
             return <Redirect to="/" push/>
         }
         return <div className={styles.fullHeight}>
+            <LoadingModal visible={this.state.processing}/>
             {
                 <InputModal visible={!this.state.room} prompt="Room Number" onConfirm={(room) => {
                     this.setState({room})
@@ -70,7 +85,7 @@ class Scan extends React.Component<any, ScanState> {
                 }}/>
             }
             {
-                this.state.room && <div className={this.state.flashingInstructions ? styles.instructionsFlash : styles.instructions}>
+                this.state.room && !this.state.processing && <div className={this.state.flashingInstructions ? styles.instructionsFlash : styles.instructions}>
                     {
                         this.state.workingNumber ? "Please scan the qr code on the screen" : "Please scan the computer's barcode"
                     }
@@ -127,6 +142,7 @@ class Scan extends React.Component<any, ScanState> {
                         this.state.withInfo.length ? <div className={[styles.button, styles.confirmButton].join(' ')}>
                             <i onClick={() => {
                                 this.setState({processing: true});
+                                this.sendScans();
 
                             }} className={['material-icons'].join(' ')}>
                                 done
