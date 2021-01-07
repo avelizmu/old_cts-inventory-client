@@ -4,7 +4,10 @@ import InputModal from "../modals/inputModal/InputModal";
 import Scanner from "../scanner/Scanner";
 import {Redirect} from "react-router";
 import LoadingModal from "../modals/loadingModal/LoadingModal";
-import axios from 'axios';
+import axios, {AxiosError, AxiosResponse} from 'axios';
+import {IAppState} from "../../redux/store";
+import {connect} from "react-redux";
+import {setLastUpdatesActionCreator, LastUpdates, SetLastUpdatesActionCreator} from "../../redux/actions/lastUpdates";
 
 type ScanState = {
     room?: string,
@@ -18,6 +21,12 @@ type ScanState = {
     cancelled?: boolean,
     processing: boolean,
     flashingInstructions: boolean,
+    showResults?: boolean
+}
+
+type ScanProps = {
+    lastUpdate: LastUpdates,
+    setLastUpdates: SetLastUpdatesActionCreator
 }
 
 type InformationScan = {
@@ -51,7 +60,7 @@ function isInformatonScan(input: any): input is InformationScan {
         "disk" in input
 }
 
-class Scan extends React.Component<any, ScanState> {
+class Scan extends React.Component<ScanProps, ScanState> {
 
     state: ScanState = {
         scans: [],
@@ -66,14 +75,42 @@ class Scan extends React.Component<any, ScanState> {
     }
 
     async sendScans() {
-        await Promise.all(this.state.withInfo.map(inp => {
-            return axios.post('/api/inventory', inp);
+        const changesResponse: (AxiosResponse | AxiosError)[] = await Promise.all(this.state.withInfo.map(inp => {
+            return axios.post('/api/inventory', inp).catch(e => e);
         }));
+        const changes: LastUpdates = changesResponse.map((response: (AxiosResponse | AxiosError), index) => {
+            if("status" in response) {
+                const casted = response as AxiosResponse;
+                if(casted.status == 201) {
+                    return {
+                        number: this.state.withInfo[index].number,
+                        message: 'Inserted into database.'
+                    }
+                }
+                return {
+                    number: this.state.withInfo[index].number,
+                    message: casted.data.message
+                }
+            }
+            else {
+                return {
+                    number: this.state.withInfo[index].number,
+                    message: 'An error occurred while processing this entry.'
+                }
+            }
+        });
+        this.props.setLastUpdates(changes);
+        this.setState({
+            showResults: true
+        })
     }
 
     render(): React.ReactNode {
         if (this.state.noCameraFound || this.state.cancelled) {
-            return <Redirect to="/" push/>
+            //return <Redirect to="/" push/>
+        }
+        if(this.state.showResults) {
+            return <Redirect to="/results" push/>
         }
         return <div className={styles.fullHeight}>
             <LoadingModal visible={this.state.processing}/>
@@ -163,4 +200,6 @@ class Scan extends React.Component<any, ScanState> {
     }
 }
 
-export default Scan;
+const mapStateToProps = (state: IAppState) => ({lastUpdates: state.lastUpdates});
+
+export default connect(mapStateToProps, {setLastUpdates: setLastUpdatesActionCreator})(Scan);

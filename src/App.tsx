@@ -7,6 +7,7 @@ import {IAppState} from "./redux/store";
 import {connect} from "react-redux";
 import {AuthenticateActionCreator, authenticateActionCreator, User} from "./redux/actions/user";
 import axios from "axios";
+import Results from "./components/results/Results";
 
 type AppProps = {
     user: User | undefined,
@@ -28,6 +29,7 @@ class App extends React.Component<AppProps, AppState> {
             return <Switch>
                 <Route exact path='/home' component={Home}/>
                 <Route exact path='/scan' component={Scan}/>
+                <Route exact path='/results' component={Results}/>
                 <Route path='/'>
                     <Redirect to='/home'/>
                 </Route>
