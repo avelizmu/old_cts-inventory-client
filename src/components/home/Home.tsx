@@ -59,12 +59,32 @@ class Home extends React.Component<any, HomeState> {
                             display: 'PC #'
                         },
                         {
-                            key: 'serial',
-                            display: 'Serial #'
+                            key: 'domain',
+                            display: 'Domain'
+                        },
+                        {
+                            key: 'brand',
+                            display: 'Brand'
                         },
                         {
                             key: 'model',
                             display: 'Model'
+                        },
+                        {
+                            key: 'serial',
+                            display: 'Serial #'
+                        },
+                        {
+                            key: 'windowsVersion',
+                            display: 'Windows Version'
+                        },
+                        {
+                            key: 'windowsBuild',
+                            display: 'Windows Build'
+                        },
+                        {
+                            key: 'windowsRelease',
+                            display: 'Windows Release'
                         },
                         {
                             key: 'cpu',
@@ -75,8 +95,16 @@ class Home extends React.Component<any, HomeState> {
                             display: 'Clock Speed'
                         },
                         {
+                            key: 'cpuCores',
+                            display: 'CPU Cores'
+                        },
+                        {
                             key: 'ram',
                             display: 'RAM'
+                        },
+                        {
+                            key: 'disk',
+                            display: 'Disk Size'
                         }
                     ]} data={this.state.data} update={(key: string, filter: string) => {
                         this.setState((previousState) => {
